@@ -1,4 +1,4 @@
-# Índice Inteligente de Políticos (IIP) — Proposta de Software
+# Índice Interativo de Políticos (IIP) — Proposta de Software
 
 Versão: 0.1 (rascunho inicial)
 Responsável: Equipe IIP
