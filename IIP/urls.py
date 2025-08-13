@@ -27,7 +27,7 @@ urlpatterns = [
     path('politico/<int:politico_id>/deletar/', deletar_politico, name='deletar_politico'),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
-    path('__reload__/', include('django_browser_reload.urls')),
+
 ]
 
 # Servir arquivos de mídia durante o desenvolvimento
