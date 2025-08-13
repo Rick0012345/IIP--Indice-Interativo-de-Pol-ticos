@@ -8,33 +8,37 @@ class PoliticoForm(forms.ModelForm):
     
     class Meta:
         model = Politico
-        fields = ['nome', 'cargo', 'partido', 'foto_url']
+        fields = ['nome', 'cargo', 'partido', 'foto', 'foto_url']
         widgets = {
             'nome': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                 'placeholder': 'Nome completo do político'
             }),
             'cargo': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
             }),
             'partido': forms.Select(attrs={
-                'class': 'form-select'
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+            }),
+            'foto': forms.ClearableFileInput(attrs={
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'accept': 'image/*'
             }),
             'foto_url': forms.URLInput(attrs={
-                'class': 'form-control',
+                'class': 'w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                 'placeholder': 'URL da foto do político (opcional)'
             }),
-
         }
         labels = {
             'nome': 'Nome Completo',
             'cargo': 'Cargo',
             'partido': 'Partido',
+            'foto': 'Upload da Foto',
             'foto_url': 'URL da Foto',
-
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Torna alguns campos opcionais na interface
+        self.fields['foto'].required = False
         self.fields['foto_url'].required = False

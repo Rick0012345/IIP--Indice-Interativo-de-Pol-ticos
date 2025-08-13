@@ -92,7 +92,8 @@ class Politico(models.Model):
 
     nome = models.CharField(max_length=150)
     slug = models.SlugField(max_length=180, unique=True)
-    foto_url = models.URLField(blank=True, null=True)
+    foto_url = models.URLField(blank=True, null=True, help_text="URL da foto (opcional)")
+    foto = models.ImageField(upload_to='politicos/', blank=True, null=True, help_text="Upload da foto (opcional)")
 
     partido = models.ForeignKey(Partido, on_delete=models.SET_NULL, null=True, blank=True, related_name="politicos")
     cargo = models.ForeignKey(Cargo, on_delete=models.SET_NULL, null=True, blank=True, related_name="politicos_atual")  # cargo atual (opcional)

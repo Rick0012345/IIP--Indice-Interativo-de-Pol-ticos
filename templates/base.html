@@ -18,6 +18,12 @@
         <a class="text-sm hover:text-blue-600" href="#">Filtros</a>
         <a class="text-sm hover:text-blue-600" href="#">Sobre</a>
         
+        {% if user.is_authenticated and user.is_superuser %}
+          <a class="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700" href="{% url 'novo_politico' %}">
+            + Adicionar Político
+          </a>
+        {% endif %}
+        
         {% if user.is_authenticated %}
           <div class="flex items-center gap-3 ml-4 pl-4 border-l border-gray-200">
             <span class="text-sm text-gray-600">Olá, {{ user.nome_completo|default:user.username }}</span>

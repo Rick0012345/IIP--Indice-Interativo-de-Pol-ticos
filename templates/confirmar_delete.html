@@ -17,7 +17,11 @@
                 <div class="card-body text-center">
                     <div class="mb-4">
                         <!-- Avatar do político -->
-                        {% if politico.foto_url %}
+                        {% if politico.foto %}
+                            <img src="{{ politico.foto.url }}" alt="{{ politico.nome }}" 
+                                 class="rounded-circle mb-3" width="80" height="80" 
+                                 style="object-fit: cover;">
+                        {% elif politico.foto_url %}
                             <img src="{{ politico.foto_url }}" alt="{{ politico.nome }}" 
                                  class="rounded-circle mb-3" width="80" height="80" 
                                  style="object-fit: cover;" 

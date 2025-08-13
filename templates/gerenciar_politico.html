@@ -1,140 +1,137 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}{{ titulo }} - IIP{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-user-edit me-2"></i>
-                        {{ titulo }}
-                    </h4>
-                </div>
-                <div class="card-body">
-                    <form method="post">
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="bg-blue-600 text-white px-6 py-4">
+            <h2 class="text-xl font-semibold">
+                {{ titulo }}
+            </h2>
+        </div>
+        <div class="p-6">
+                    <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                         
                         <!-- Nome -->
-                        <div class="mb-3">
-                            <label for="{{ form.nome.id_for_label }}" class="form-label">
-                                <i class="fas fa-user me-1"></i>
+                        <div class="mb-4">
+                            <label for="{{ form.nome.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
                                 {{ form.nome.label }}
                             </label>
                             {{ form.nome }}
                             {% if form.nome.errors %}
-                                <div class="text-danger small mt-1">
+                                <div class="text-red-600 text-sm mt-1">
                                     {{ form.nome.errors.0 }}
                                 </div>
                             {% endif %}
                         </div>
 
                         <!-- Cargo -->
-                        <div class="mb-3">
-                            <label for="{{ form.cargo.id_for_label }}" class="form-label">
-                                <i class="fas fa-briefcase me-1"></i>
+                        <div class="mb-4">
+                            <label for="{{ form.cargo.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
                                 {{ form.cargo.label }}
                             </label>
                             {{ form.cargo }}
                             {% if form.cargo.errors %}
-                                <div class="text-danger small mt-1">
+                                <div class="text-red-600 text-sm mt-1">
                                     {{ form.cargo.errors.0 }}
                                 </div>
                             {% endif %}
                         </div>
 
                         <!-- Partido -->
-                        <div class="mb-3">
-                            <label for="{{ form.partido.id_for_label }}" class="form-label">
-                                <i class="fas fa-flag me-1"></i>
+                        <div class="mb-4">
+                            <label for="{{ form.partido.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
                                 {{ form.partido.label }}
                             </label>
                             {{ form.partido }}
                             {% if form.partido.errors %}
-                                <div class="text-danger small mt-1">
+                                <div class="text-red-600 text-sm mt-1">
                                     {{ form.partido.errors.0 }}
                                 </div>
                             {% endif %}
                         </div>
 
+                        <!-- Upload da Foto -->
+                        <div class="mb-4">
+                            <label for="{{ form.foto.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                {{ form.foto.label }}
+                            </label>
+                            {{ form.foto }}
+                            {% if form.foto.errors %}
+                                <div class="text-red-600 text-sm mt-1">
+                                    {{ form.foto.errors.0 }}
+                                </div>
+                            {% endif %}
+                            <div class="text-sm text-gray-600 mt-1">
+                                Faça upload de uma foto do político (JPG, PNG, etc.)
+                            </div>
+                        </div>
+
                         <!-- URL da Foto -->
-                        <div class="mb-3">
-                            <label for="{{ form.foto_url.id_for_label }}" class="form-label">
-                                <i class="fas fa-image me-1"></i>
+                        <div class="mb-4">
+                            <label for="{{ form.foto_url.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
                                 {{ form.foto_url.label }}
                             </label>
                             {{ form.foto_url }}
                             {% if form.foto_url.errors %}
-                                <div class="text-danger small mt-1">
+                                <div class="text-red-600 text-sm mt-1">
                                     {{ form.foto_url.errors.0 }}
                                 </div>
                             {% endif %}
-                            <div class="form-text">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Cole aqui a URL de uma imagem do político. Deixe em branco para usar avatar com iniciais.
+                            <div class="text-sm text-gray-600 mt-1">
+                                Ou cole aqui a URL de uma imagem do político. Deixe em branco para usar avatar com iniciais.
                             </div>
                         </div>
 
                         <!-- Preview da Foto -->
-                        {% if politico.foto_url %}
-                        <div class="mb-3">
-                            <label class="form-label">
-                                <i class="fas fa-eye me-1"></i>
+                        {% if politico.foto or politico.foto_url %}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
                                 Preview Atual
                             </label>
-                            <div class="d-flex align-items-center">
-                                <img src="{{ politico.foto_url }}" alt="{{ politico.nome }}" 
-                                     class="rounded-circle me-3" width="60" height="60" 
-                                     style="object-fit: cover;" 
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="avatar-circle d-none" style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">
-                                    {% if politico.nome %}
-                                        {{ politico.nome|slice:":1" }}{{ politico.nome|split:" "|slice:"1:2"|join:""|slice:":1" }}
-                                    {% endif %}
-                                </div>
+                            <div class="flex items-center">
+                                {% if politico.foto %}
+                                    <img src="{{ politico.foto.url }}" alt="{{ politico.nome }}" 
+                                         class="w-16 h-16 rounded-full mr-3 object-cover">
+                                    <span class="text-sm text-gray-600">Foto enviada</span>
+                                {% elif politico.foto_url %}
+                                    <img src="{{ politico.foto_url }}" alt="{{ politico.nome }}" 
+                                         class="w-16 h-16 rounded-full mr-3 object-cover z-10" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl" style="display: none;">
+                                        {% if politico.nome %}
+                                            {{ politico.nome|slice:":1" }}{{ politico.nome|split:" "|slice:"1:2"|join:""|slice:":1" }}
+                                        {% endif %}
+                                    </div>
+                                    <span class="text-sm text-gray-600">Foto via URL</span>
+                                {% endif %}
                             </div>
                         </div>
                         {% endif %}
 
-                        <!-- Biografia -->
-                        <div class="mb-4">
-                            <label for="{{ form.biografia.id_for_label }}" class="form-label">
-                                <i class="fas fa-file-text me-1"></i>
-                                {{ form.biografia.label }}
-                            </label>
-                            {{ form.biografia }}
-                            {% if form.biografia.errors %}
-                                <div class="text-danger small mt-1">
-                                    {{ form.biografia.errors.0 }}
-                                </div>
-                            {% endif %}
-                        </div>
+
 
                         <!-- Botões -->
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'home' %}" class="btn btn-secondary">
-                                <i class="fas fa-arrow-left me-1"></i>
+                        <div class="flex justify-between items-center">
+                            <a href="{% url 'home' %}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
                                 Voltar
                             </a>
-                            <div>
+                            <div class="flex space-x-2">
                                 {% if politico %}
-                                <a href="{% url 'deletar_politico' politico.id %}" class="btn btn-danger me-2">
-                                    <i class="fas fa-trash me-1"></i>
+                                <a href="{% url 'deletar_politico' politico.id %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
                                     Excluir
                                 </a>
                                 {% endif %}
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save me-1"></i>
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors font-medium">
                                     {% if politico %}Atualizar{% else %}Criar{% endif %}
                                 </button>
                             </div>
                         </div>
                     </form>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -151,21 +148,19 @@ document.getElementById('id_foto_url').addEventListener('input', function() {
     
     if (url) {
         const preview = document.createElement('div');
-        preview.className = 'preview-container mb-3';
+        preview.className = 'preview-container mb-4';
         preview.innerHTML = `
-            <label class="form-label">
-                <i class="fas fa-eye me-1"></i>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
                 Preview
             </label>
-            <div class="d-flex align-items-center">
-                <img src="${url}" alt="Preview" 
-                     class="rounded-circle me-3" width="60" height="60" 
-                     style="object-fit: cover;" 
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="avatar-circle d-none" style="width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 20px;">
-                    ??
-                </div>
-            </div>
+            <div class="flex items-center">
+                 <img src="${url}" alt="Preview" 
+                      class="w-16 h-16 rounded-full mr-3 object-cover z-10" 
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                 <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl" style="display: none;">
+                     ??
+                 </div>
+             </div>
         `;
         this.parentNode.insertAdjacentElement('afterend', preview);
     }
