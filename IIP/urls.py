@@ -18,13 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from core.views import HomeView, gerenciar_politico, deletar_politico
+from core.views import HomeView, gerenciar_politico, deletar_politico, detalhes_politico, avaliar_politico
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('politico/novo/', gerenciar_politico, name='novo_politico'),
     path('politico/<int:politico_id>/editar/', gerenciar_politico, name='editar_politico'),
     path('politico/<int:politico_id>/deletar/', deletar_politico, name='deletar_politico'),
+    path('politico/<slug:slug>/', detalhes_politico, name='detalhes_politico'),
+    path('politico/<slug:slug>/avaliar/', avaliar_politico, name='avaliar_politico'),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
 

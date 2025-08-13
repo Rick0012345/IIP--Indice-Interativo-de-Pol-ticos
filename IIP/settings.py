@@ -95,7 +95,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Database: PostgreSQL via DATABASE_URL
+# Database: PostgreSQL via DATABASE_URL ou SQLite como fallback
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 if DATABASE_URL:
     parsed = urlparse(DATABASE_URL)
@@ -107,6 +107,14 @@ if DATABASE_URL:
             'PASSWORD': parsed.password,
             'HOST': parsed.hostname,
             'PORT': parsed.port or 5432,
+        }
+    }
+else:
+    # Fallback para SQLite em desenvolvimento
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
