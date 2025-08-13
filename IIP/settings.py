@@ -40,10 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'rest_framework',
-    'corsheaders',
-    'tailwind',
-    'django_browser_reload',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -53,22 +49,21 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'IIP.urls'
 
-TAILWIND_APP_NAME = 'theme'
-
 # Modelo de usuário personalizado
 AUTH_USER_MODEL = 'core.CustomUser'
+
+# Site ID para allauth
+SITE_ID = 1
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -139,19 +134,16 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
-# Formulários customizados
-ACCOUNT_FORMS = {
-    'signup': 'core.forms.CustomSignupForm',
-}
+# Configurações do allauth
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'iip_db'),
-        'USER': os.getenv('POSTGRES_USER', 'iip_user'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'iip_password'),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-    }
+}

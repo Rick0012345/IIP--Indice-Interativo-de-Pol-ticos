@@ -16,11 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from core.views import HomeView
+from core.views import HomeView, gerenciar_politico, deletar_politico
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
+    path('politico/novo/', gerenciar_politico, name='novo_politico'),
+    path('politico/<int:politico_id>/editar/', gerenciar_politico, name='editar_politico'),
+    path('politico/<int:politico_id>/deletar/', deletar_politico, name='deletar_politico'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('accounts/', include('allauth.urls')),
     path('__reload__/', include('django_browser_reload.urls')),
 ]

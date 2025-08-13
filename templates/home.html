@@ -1,97 +1,303 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}IIP - Índice de Integridade Política{% endblock %}
+
 {% block content %}
-<section class="mb-8">
-  <h2 class="text-2xl font-bold mb-3">Bem-vindo ao IIP</h2>
-  <p class="text-gray-600">Protótipo inicial com Django + TailwindCSS (CDN). Vamos evoluir para o ranking e filtros.</p>
-</section>
-
-<!-- Seção 1: Executivo -->
-<section class="mb-10">
-  <h2 class="text-xl font-bold mb-4">Executivo</h2>
-  <div id="grid-executivo" class="overflow-x-auto -mx-4 px-4 pb-2">
-    <div class="flex gap-4 snap-x snap-mandatory">
-      {% for p in exec_politicos %}
-        <div class="bg-white border rounded-lg overflow-hidden shadow-sm min-w-[240px] w-64 snap-start">
-          {% if p.foto_url %}
-            <img src="{{ p.foto_url }}" alt="{{ p.nome }}" class="w-full h-40 object-cover">
-          {% else %}
-            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-500">Sem foto</div>
-          {% endif %}
-          <div class="p-4">
-            <h3 class="font-semibold text-lg mb-1">{{ p.nome }}</h3>
-            <p class="text-sm text-gray-600">
-              {% if p.cargo %}{{ p.cargo.nome }}{% endif %}
-              {% if p.partido %} • {{ p.partido.sigla }}{% endif %}
-            </p>
-            <p class="text-xs text-gray-500 mt-1">
-              {% if p.municipio %}{{ p.municipio }}{% if p.uf %}, {{ p.uf }}{% endif %}{% elif p.uf %}{{ p.uf }}{% endif %}
-            </p>
-          </div>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary mb-3">
+            <i class="fas fa-balance-scale me-3"></i>
+            Índice de Integridade Política
+        </h1>
+        <p class="lead text-muted">
+            Transparência e accountability na política brasileira
+        </p>
+        
+        <!-- Botão Adicionar Político -->
+        {% if user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{% url 'novo_politico' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus me-2"></i>
+                Adicionar Novo Político
+            </a>
         </div>
-      {% empty %}
-        <div class="text-gray-500">Sem dados cadastrados no Executivo.</div>
-      {% endfor %}
+        {% endif %}
     </div>
-  </div>
-</section>
 
-<!-- Seção 2: Legislativo -->
-<section class="mb-10">
-  <h2 class="text-xl font-bold mb-4">Legislativo</h2>
-  <div id="grid-legislativo" class="overflow-x-auto -mx-4 px-4 pb-2">
-    <div class="flex gap-4 snap-x snap-mandatory">
-      {% for p in leg_politicos %}
-        <div class="bg-white border rounded-lg overflow-hidden shadow-sm min-w-[240px] w-64 snap-start">
-          {% if p.foto_url %}
-            <img src="{{ p.foto_url }}" alt="{{ p.nome }}" class="w-full h-40 object-cover">
-          {% else %}
-            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-500">Sem foto</div>
-          {% endif %}
-          <div class="p-4">
-            <h3 class="font-semibold text-lg mb-1">{{ p.nome }}</h3>
-            <p class="text-sm text-gray-600">
-              {% if p.cargo %}{{ p.cargo.nome }}{% endif %}
-              {% if p.partido %} • {{ p.partido.sigla }}{% endif %}
-            </p>
-            <p class="text-xs text-gray-500 mt-1">
-              {% if p.municipio %}{{ p.municipio }}{% if p.uf %}, {{ p.uf }}{% endif %}{% elif p.uf %}{{ p.uf }}{% endif %}
-            </p>
-          </div>
+    <!-- Seção Executivo -->
+    <section class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="badge bg-primary me-3" style="width: 20px; height: 20px; border-radius: 50%;"></div>
+            <h2 class="h3 mb-0 text-primary fw-bold">
+                <i class="fas fa-crown me-2"></i>
+                Poder Executivo
+            </h2>
         </div>
-      {% empty %}
-        <div class="text-gray-500">Sem dados cadastrados no Legislativo.</div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
+        
+        {% if executivo %}
+            <div class="row">
+                {% for politico in executivo %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0 politico-card position-relative">
+                            <!-- Botões de Gerenciamento -->
+                            {% if user.is_authenticated %}
+                            <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'editar_politico' politico.id %}">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </a></li>
+                                        <li><a class="dropdown-item text-danger" href="{% url 'deletar_politico' politico.id %}">
+                                            <i class="fas fa-trash me-1"></i> Excluir
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="card-body text-center p-4" {% if user.is_authenticated %}style="cursor: pointer;" onclick="window.location.href='{% url 'editar_politico' politico.id %}'"{% endif %}>
+                                <!-- Avatar -->
+                                {% if politico.foto_url %}
+                                    <img src="{{ politico.foto_url }}" alt="{{ politico.nome }}" 
+                                         class="rounded-circle mb-3" width="80" height="80" 
+                                         style="object-fit: cover;" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="avatar-circle d-none mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                                        {{ politico.nome|get_initials }}
+                                    </div>
+                                {% else %}
+                                    <div class="avatar-circle mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                                        {{ politico.nome|get_initials }}
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Informações -->
+                                <h5 class="card-title mb-2">{{ politico.nome }}</h5>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-briefcase me-1"></i>
+                                    {{ politico.cargo.nome }}
+                                </p>
+                                <p class="text-muted mb-3">
+                                    <i class="fas fa-flag me-1"></i>
+                                    {{ politico.partido.sigla }}
+                                </p>
+                                
+                                <!-- Placeholder para métricas futuras -->
+                                <div class="d-flex justify-content-around text-center">
+                                    <div>
+                                        <small class="text-muted d-block">Integridade</small>
+                                        <span class="badge bg-success">Em breve</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Transparência</small>
+                                        <span class="badge bg-info">Em breve</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Nenhum político do Poder Executivo cadastrado.
+            </div>
+        {% endif %}
+    </section>
 
-<!-- Seção 3: Judiciário -->
-<section class="mb-10">
-  <h2 class="text-xl font-bold mb-4">Judiciário</h2>
-  <div id="grid-judiciario" class="overflow-x-auto -mx-4 px-4 pb-2">
-    <div class="flex gap-4 snap-x snap-mandatory">
-      {% for p in jud_politicos %}
-        <div class="bg-white border rounded-lg overflow-hidden shadow-sm min-w-[240px] w-64 snap-start">
-          {% if p.foto_url %}
-            <img src="{{ p.foto_url }}" alt="{{ p.nome }}" class="w-full h-40 object-cover">
-          {% else %}
-            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-500">Sem foto</div>
-          {% endif %}
-          <div class="p-4">
-            <h3 class="font-semibold text-lg mb-1">{{ p.nome }}</h3>
-            <p class="text-sm text-gray-600">
-              {% if p.cargo %}{{ p.cargo.nome }}{% endif %}
-              {% if p.partido %} • {{ p.partido.sigla }}{% endif %}
-            </p>
-            <p class="text-xs text-gray-500 mt-1">
-              {% if p.municipio %}{{ p.municipio }}{% if p.uf %}, {{ p.uf }}{% endif %}{% elif p.uf %}{{ p.uf }}{% endif %}
-            </p>
-          </div>
+    <!-- Seção Legislativo -->
+    <section class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="badge bg-success me-3" style="width: 20px; height: 20px; border-radius: 50%;"></div>
+            <h2 class="h3 mb-0 text-success fw-bold">
+                <i class="fas fa-gavel me-2"></i>
+                Poder Legislativo
+            </h2>
         </div>
-      {% empty %}
-        <div class="text-gray-500">Sem dados cadastrados no Judiciário.</div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
+        
+        {% if legislativo %}
+            <div class="row">
+                {% for politico in legislativo %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0 politico-card position-relative">
+                            <!-- Botões de Gerenciamento -->
+                            {% if user.is_authenticated %}
+                            <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'editar_politico' politico.id %}">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </a></li>
+                                        <li><a class="dropdown-item text-danger" href="{% url 'deletar_politico' politico.id %}">
+                                            <i class="fas fa-trash me-1"></i> Excluir
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="card-body text-center p-4" {% if user.is_authenticated %}style="cursor: pointer;" onclick="window.location.href='{% url 'editar_politico' politico.id %}'"{% endif %}>
+                                <!-- Avatar -->
+                                {% if politico.foto_url %}
+                                    <img src="{{ politico.foto_url }}" alt="{{ politico.nome }}" 
+                                         class="rounded-circle mb-3" width="80" height="80" 
+                                         style="object-fit: cover;" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="avatar-circle d-none mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                                        {{ politico.nome|get_initials }}
+                                    </div>
+                                {% else %}
+                                    <div class="avatar-circle mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                                        {{ politico.nome|get_initials }}
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Informações -->
+                                <h5 class="card-title mb-2">{{ politico.nome }}</h5>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-briefcase me-1"></i>
+                                    {{ politico.cargo.nome }}
+                                </p>
+                                <p class="text-muted mb-3">
+                                    <i class="fas fa-flag me-1"></i>
+                                    {{ politico.partido.sigla }}
+                                </p>
+                                
+                                <!-- Placeholder para métricas futuras -->
+                                <div class="d-flex justify-content-around text-center">
+                                    <div>
+                                        <small class="text-muted d-block">Integridade</small>
+                                        <span class="badge bg-success">Em breve</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Transparência</small>
+                                        <span class="badge bg-info">Em breve</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Nenhum político do Poder Legislativo cadastrado.
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- Seção Judiciário -->
+    <section class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="badge bg-danger me-3" style="width: 20px; height: 20px; border-radius: 50%;"></div>
+            <h2 class="h3 mb-0 text-danger fw-bold">
+                <i class="fas fa-balance-scale me-2"></i>
+                Poder Judiciário
+            </h2>
+        </div>
+        
+        {% if judiciario %}
+            <div class="row">
+                {% for politico in judiciario %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0 politico-card position-relative">
+                            <!-- Botões de Gerenciamento -->
+                            {% if user.is_authenticated %}
+                            <div class="position-absolute top-0 end-0 p-2" style="z-index: 10;">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-cog"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{% url 'editar_politico' politico.id %}">
+                                            <i class="fas fa-edit me-1"></i> Editar
+                                        </a></li>
+                                        <li><a class="dropdown-item text-danger" href="{% url 'deletar_politico' politico.id %}">
+                                            <i class="fas fa-trash me-1"></i> Excluir
+                                        </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="card-body text-center p-4" {% if user.is_authenticated %}style="cursor: pointer;" onclick="window.location.href='{% url 'editar_politico' politico.id %}'"{% endif %}>
+                                <!-- Avatar -->
+                                {% if politico.foto_url %}
+                                    <img src="{{ politico.foto_url }}" alt="{{ politico.nome }}" 
+                                         class="rounded-circle mb-3" width="80" height="80" 
+                                         style="object-fit: cover;" 
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    <div class="avatar-circle d-none mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                                        {{ politico.nome|get_initials }}
+                                    </div>
+                                {% else %}
+                                    <div class="avatar-circle mx-auto mb-3" style="width: 80px; height: 80px; background: linear-gradient(135deg, #fc466b 0%, #3f5efb 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 24px;">
+                                        {{ politico.nome|get_initials }}
+                                    </div>
+                                {% endif %}
+                                
+                                <!-- Informações -->
+                                <h5 class="card-title mb-2">{{ politico.nome }}</h5>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-briefcase me-1"></i>
+                                    {{ politico.cargo.nome }}
+                                </p>
+                                <p class="text-muted mb-3">
+                                    <i class="fas fa-flag me-1"></i>
+                                    {{ politico.partido.sigla }}
+                                </p>
+                                
+                                <!-- Placeholder para métricas futuras -->
+                                <div class="d-flex justify-content-around text-center">
+                                    <div>
+                                        <small class="text-muted d-block">Integridade</small>
+                                        <span class="badge bg-success">Em breve</span>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted d-block">Transparência</small>
+                                        <span class="badge bg-info">Em breve</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
+                Nenhum político do Poder Judiciário cadastrado.
+            </div>
+        {% endif %}
+    </section>
+</div>
+
+<style>
+.politico-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.politico-card:hover {
+    transform: translateY(-5px);
+}
+
+.avatar-circle {
+    transition: all 0.3s ease;
+}
+
+.politico-card:hover .avatar-circle {
+    transform: scale(1.05);
+}
+</style>
 {% endblock %}
