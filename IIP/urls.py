@@ -21,5 +21,6 @@ from core.views import HomeView
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('__reload__/', include('django_browser_reload.urls')),
 ]

@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Criar Conta - IIP{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                Criar nova conta
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Ou
+                <a href="{% url 'account_login' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                    entrar na sua conta existente
+                </a>
+            </p>
+        </div>
+        
+        <form class="mt-8 space-y-6" method="post" action="{% url 'account_signup' %}">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    {% for error in form.non_field_errors %}
+                        <span class="block sm:inline">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="space-y-4">
+                <!-- Nome Completo -->
+                <div>
+                    <label for="{{ form.nome_completo.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Nome Completo *
+                    </label>
+                    <input id="{{ form.nome_completo.id_for_label }}" 
+                           name="{{ form.nome_completo.name }}" 
+                           type="text" 
+                           required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           placeholder="Seu nome completo"
+                           value="{{ form.nome_completo.value|default:'' }}">
+                    {% if form.nome_completo.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.nome_completo.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- CPF -->
+                <div>
+                    <label for="{{ form.cpf.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        CPF *
+                    </label>
+                    <input id="{{ form.cpf.id_for_label }}" 
+                           name="{{ form.cpf.name }}" 
+                           type="text" 
+                           required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           placeholder="000.000.000-00"
+                           value="{{ form.cpf.value|default:'' }}">
+                    {% if form.cpf.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.cpf.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-1">Digite apenas os números do CPF</p>
+                </div>
+                
+                <!-- Nome de usuário -->
+                <div>
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Nome de usuário *
+                    </label>
+                    <input id="{{ form.username.id_for_label }}" 
+                           name="{{ form.username.name }}" 
+                           type="text" 
+                           required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           placeholder="Nome de usuário"
+                           value="{{ form.username.value|default:'' }}">
+                    {% if form.username.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.username.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Email -->
+                <div>
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Email *
+                    </label>
+                    <input id="{{ form.email.id_for_label }}" 
+                           name="{{ form.email.name }}" 
+                           type="email" 
+                           required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           placeholder="seu@email.com"
+                           value="{{ form.email.value|default:'' }}">
+                    {% if form.email.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.email.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Telefone -->
+                <div>
+                    <label for="{{ form.telefone.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Telefone
+                    </label>
+                    <input id="{{ form.telefone.id_for_label }}" 
+                           name="{{ form.telefone.name }}" 
+                           type="text" 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           placeholder="(11) 99999-9999"
+                           value="{{ form.telefone.value|default:'' }}">
+                    {% if form.telefone.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.telefone.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Data de Nascimento -->
+                <div>
+                    <label for="{{ form.data_nascimento.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Data de Nascimento *
+                    </label>
+                    <input id="{{ form.data_nascimento.id_for_label }}" 
+                           name="{{ form.data_nascimento.name }}" 
+                           type="date" 
+                           required
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           value="{{ form.data_nascimento.value|default:'' }}">
+                    <p class="text-xs text-gray-500 mt-1">Idade mínima: 16 anos</p>
+                    {% if form.data_nascimento.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.data_nascimento.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Senha -->
+                <div>
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Senha *
+                    </label>
+                    <input id="{{ form.password1.id_for_label }}" 
+                           name="{{ form.password1.name }}" 
+                           type="password" 
+                           required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           placeholder="Senha">
+                    {% if form.password1.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.password1.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Confirmar Senha -->
+                <div>
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        Confirmar Senha *
+                    </label>
+                    <input id="{{ form.password2.id_for_label }}" 
+                           name="{{ form.password2.name }}" 
+                           type="password" 
+                           required 
+                           class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                           placeholder="Confirme a senha">
+                    {% if form.password2.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.password2.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Criar Conta
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Máscara para CPF
+document.getElementById('{{ form.cpf.id_for_label }}').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 11) {
+        value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        e.target.value = value;
+    }
+});
+
+// Máscara para telefone
+document.getElementById('{{ form.telefone.id_for_label }}').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 11) {
+        if (value.length <= 10) {
+            value = value.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+        } else {
+            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        }
+        e.target.value = value;
+    }
+});
+</script>
+{% endblock %}

@@ -5,3 +5,4 @@ psycopg2-binary==2.9.9
 python-decouple==3.8
 django-tailwind==3.8.0
 django-browser-reload==1.12.1
+django-allauth==0.57.0

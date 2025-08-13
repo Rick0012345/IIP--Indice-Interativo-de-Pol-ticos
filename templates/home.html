@@ -5,18 +5,93 @@
   <p class="text-gray-600">Protótipo inicial com Django + TailwindCSS (CDN). Vamos evoluir para o ranking e filtros.</p>
 </section>
 
-<section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-  <div class="bg-white border rounded-lg p-6 shadow-sm">
-    <h3 class="font-semibold mb-2">Top 10 — Executivo</h3>
-    <p class="text-sm text-gray-500">Em breve: prefeitos, governadores, presidente.</p>
+<!-- Seção 1: Executivo -->
+<section class="mb-10">
+  <h2 class="text-xl font-bold mb-4">Executivo</h2>
+  <div id="grid-executivo" class="overflow-x-auto -mx-4 px-4 pb-2">
+    <div class="flex gap-4 snap-x snap-mandatory">
+      {% for p in exec_politicos %}
+        <div class="bg-white border rounded-lg overflow-hidden shadow-sm min-w-[240px] w-64 snap-start">
+          {% if p.foto_url %}
+            <img src="{{ p.foto_url }}" alt="{{ p.nome }}" class="w-full h-40 object-cover">
+          {% else %}
+            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-500">Sem foto</div>
+          {% endif %}
+          <div class="p-4">
+            <h3 class="font-semibold text-lg mb-1">{{ p.nome }}</h3>
+            <p class="text-sm text-gray-600">
+              {% if p.cargo %}{{ p.cargo.nome }}{% endif %}
+              {% if p.partido %} • {{ p.partido.sigla }}{% endif %}
+            </p>
+            <p class="text-xs text-gray-500 mt-1">
+              {% if p.municipio %}{{ p.municipio }}{% if p.uf %}, {{ p.uf }}{% endif %}{% elif p.uf %}{{ p.uf }}{% endif %}
+            </p>
+          </div>
+        </div>
+      {% empty %}
+        <div class="text-gray-500">Sem dados cadastrados no Executivo.</div>
+      {% endfor %}
+    </div>
   </div>
-  <div class="bg-white border rounded-lg p-6 shadow-sm">
-    <h3 class="font-semibold mb-2">Top 10 — Legislativo</h3>
-    <p class="text-sm text-gray-500">Em breve: vereadores, deputados, senadores.</p>
+</section>
+
+<!-- Seção 2: Legislativo -->
+<section class="mb-10">
+  <h2 class="text-xl font-bold mb-4">Legislativo</h2>
+  <div id="grid-legislativo" class="overflow-x-auto -mx-4 px-4 pb-2">
+    <div class="flex gap-4 snap-x snap-mandatory">
+      {% for p in leg_politicos %}
+        <div class="bg-white border rounded-lg overflow-hidden shadow-sm min-w-[240px] w-64 snap-start">
+          {% if p.foto_url %}
+            <img src="{{ p.foto_url }}" alt="{{ p.nome }}" class="w-full h-40 object-cover">
+          {% else %}
+            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-500">Sem foto</div>
+          {% endif %}
+          <div class="p-4">
+            <h3 class="font-semibold text-lg mb-1">{{ p.nome }}</h3>
+            <p class="text-sm text-gray-600">
+              {% if p.cargo %}{{ p.cargo.nome }}{% endif %}
+              {% if p.partido %} • {{ p.partido.sigla }}{% endif %}
+            </p>
+            <p class="text-xs text-gray-500 mt-1">
+              {% if p.municipio %}{{ p.municipio }}{% if p.uf %}, {{ p.uf }}{% endif %}{% elif p.uf %}{{ p.uf }}{% endif %}
+            </p>
+          </div>
+        </div>
+      {% empty %}
+        <div class="text-gray-500">Sem dados cadastrados no Legislativo.</div>
+      {% endfor %}
+    </div>
   </div>
-  <div class="bg-white border rounded-lg p-6 shadow-sm">
-    <h3 class="font-semibold mb-2">Top 10 — Judiciário</h3>
-    <p class="text-sm text-gray-500">Em breve: ministros, desembargadores.</p>
+</section>
+
+<!-- Seção 3: Judiciário -->
+<section class="mb-10">
+  <h2 class="text-xl font-bold mb-4">Judiciário</h2>
+  <div id="grid-judiciario" class="overflow-x-auto -mx-4 px-4 pb-2">
+    <div class="flex gap-4 snap-x snap-mandatory">
+      {% for p in jud_politicos %}
+        <div class="bg-white border rounded-lg overflow-hidden shadow-sm min-w-[240px] w-64 snap-start">
+          {% if p.foto_url %}
+            <img src="{{ p.foto_url }}" alt="{{ p.nome }}" class="w-full h-40 object-cover">
+          {% else %}
+            <div class="h-40 bg-gray-200 flex items-center justify-center text-gray-500">Sem foto</div>
+          {% endif %}
+          <div class="p-4">
+            <h3 class="font-semibold text-lg mb-1">{{ p.nome }}</h3>
+            <p class="text-sm text-gray-600">
+              {% if p.cargo %}{{ p.cargo.nome }}{% endif %}
+              {% if p.partido %} • {{ p.partido.sigla }}{% endif %}
+            </p>
+            <p class="text-xs text-gray-500 mt-1">
+              {% if p.municipio %}{{ p.municipio }}{% if p.uf %}, {{ p.uf }}{% endif %}{% elif p.uf %}{{ p.uf }}{% endif %}
+            </p>
+          </div>
+        </div>
+      {% empty %}
+        <div class="text-gray-500">Sem dados cadastrados no Judiciário.</div>
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endblock %}

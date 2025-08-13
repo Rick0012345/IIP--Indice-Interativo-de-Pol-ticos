@@ -45,23 +45,23 @@ services:
     networks:
       - iip_network
 
-  # Celery Worker (para processamento assíncrono)
-  celery:
-    build: .
-    container_name: iip_celery
-    command: celery -A IIP worker --loglevel=info
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-      - redis
-    environment:
-      - DATABASE_URL=postgresql://iip_user:iip_password@db:5432/iip_db
-      - REDIS_URL=redis://redis:6379/0
-      - DEBUG=True
-      - SECRET_KEY=django-insecure-&48=4(7eg+!tp%wa_bss&dth!ik=7gwzs+xalf0ktz=6)3&^l3
-    networks:
-      - iip_network
+  # Celery Worker (para processamento assíncrono) - Comentado temporariamente
+  # celery:
+  #   build: .
+  #   container_name: iip_celery
+  #   command: celery -A IIP worker --loglevel=info
+  #   volumes:
+  #     - .:/app
+  #   depends_on:
+  #     - db
+  #     - redis
+  #   environment:
+  #     - DATABASE_URL=postgresql://iip_user:iip_password@db:5432/iip_db
+  #     - REDIS_URL=redis://redis:6379/0
+  #     - DEBUG=True
+  #     - SECRET_KEY=django-insecure-&48=4(7eg+!tp%wa_bss&dth!ik=7gwzs+xalf0ktz=6)3&^l3
+  #   networks:
+  #     - iip_network
 
 volumes:
   postgres_data:

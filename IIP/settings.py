@@ -39,10 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
     'corsheaders',
     'tailwind',
     'django_browser_reload',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',
@@ -60,6 +66,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'IIP.urls'
 
 TAILWIND_APP_NAME = 'theme'
+
+# Modelo de usuário personalizado
+AUTH_USER_MODEL = 'core.CustomUser'
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -105,14 +114,44 @@ if DATABASE_URL:
             'PORT': parsed.port or 5432,
         }
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('POSTGRES_DB', 'iip_db'),
-            'USER': os.getenv('POSTGRES_USER', 'iip_user'),
-            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'iip_password'),
-            'HOST': os.getenv('POSTGRES_HOST', 'db'),
-            'PORT': os.getenv('POSTGRES_PORT', '5432'),
-        }
+
+# Site ID para django-allauth
+SITE_ID = 1
+
+# Configurações do django-allauth
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Configurações de autenticação
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_SESSION_REMEMBER = True
+ACCOUNT_LOGOUT_ON_GET = False
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+
+# URLs de redirecionamento
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
+# Formulários customizados
+ACCOUNT_FORMS = {
+    'signup': 'core.forms.CustomSignupForm',
+}
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'iip_db'),
+        'USER': os.getenv('POSTGRES_USER', 'iip_user'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'iip_password'),
+        'HOST': os.getenv('POSTGRES_HOST', 'db'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+    }
     }
